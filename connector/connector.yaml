@@ -1,0 +1,6 @@
+# connector config file
+# ServeAddr should be the pulbic ip:port
+ServeAddr : 127.0.0.1:8080
+# RpcAddr should be the private ip:port
+RpcAddr : 127.0.0.1:8082
+
