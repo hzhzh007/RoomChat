@@ -11,7 +11,7 @@ high concurrency and scalability room chat backend based on websocket and write 
 pass
 
 
-## direction
+## Directory
 
  * /common 
  * /connector
