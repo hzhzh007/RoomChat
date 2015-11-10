@@ -6,11 +6,23 @@ import (
 	"net/http"
 )
 
+type ZK struct {
+	ZookeeperAddr    []string `yaml:"ZookeeperAddr"`
+	ZookeeperTimeout string   `yaml:"ZookeeperTimeout"`
+	ZookeeperNode    string   `yaml:"ZookeeperConnNode"`
+}
+
+type ConnectorConf struct {
+	Hostname  string `yaml:"Hostname" json:"Hostname"`
+	ServeAddr string `yaml:"ServeAddr" json:"ServeAddr"`
+	RpcAddr   string `yaml:"RpcAddr";json:"RpcAddr"`
+}
+
 type Msg struct {
 	From    string
 	Roomid  string
 	Userid  string
-	Msg     []byte
+	Msg     string
 	Msgtype string
 }
 
@@ -43,6 +55,13 @@ const (
 	OK_CODE = 0
 
 	OK_STR = "OK"
+
+	// zookeeper
+	ZOOKEEPER_CONN_PATH    = "/connector"
+	ZOOKEEPER_ROOM_PATH    = "/room"
+	ZOOKEEPER_GATE_PATH    = "/gate"
+	ZOOKEEPER_ROUTER_PATH  = "/rooter"
+	ZOOKEEPER_REQUEST_PATH = "/request"
 )
 
 func WriteJsonResponse(w http.ResponseWriter, status int, msg string, data interface{}) (int, error) {

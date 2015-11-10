@@ -1,4 +1,4 @@
-// select the connector and sort
+// optimum selectiion of connector
 
 package main
 
@@ -10,7 +10,8 @@ import (
 )
 
 var (
-	connectorInfo *map[string][]RoomInfo
+	connectorInfo      *map[string][]RoomInfo
+	optimizationedConn map[string][]string // map[roomid] = [conn1, conn2,...]
 )
 
 //get server list by room id
@@ -20,11 +21,19 @@ func roomServerList(roomid string) ([]string, error) {
 	return conns, nil
 }
 
+//TODO get from conf or etcd
+func getConnectos() []ConnectorConf {
+	conf := GetConfig()
+	return conf.Connectors
+
+}
+
+// use *connectorInfo as 0-1 buf
 //TODO  lock the map ? or pay attention to the gc
 func updateConn() {
 	temp := new(map[string][]RoomInfo)
-	conf := GetConfig()
-	for _, conn_addr := range conf.Connectors {
+	conns := getConnectos()
+	for _, conn_addr := range conns {
 		client, err := rpc_pool.GetRpcClient(conn_addr.RpcAddr)
 		if err != nil {
 			log.Println("get rpc client error", err)
@@ -36,7 +45,7 @@ func updateConn() {
 			log.Println("rpc broadcast error:", err)
 			continue
 		}
-		temp[conn_addr.ServeAddr] = reply
+		(*temp)[conn_addr.ServeAddr] = reply
 		log.Println("rpc result", reply)
 	}
 	connectorInfo = temp
@@ -45,6 +54,9 @@ func updateConn() {
 func updateConnectorInfo() {
 	for {
 		updateConn()
-		time.Sleep(5 * time.Second)
+		time.Sleep(60 * time.Second)
 	}
+}
+
+func UpdateConnectorList() {
 }

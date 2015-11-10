@@ -2,7 +2,8 @@ package main
 
 import (
 	"flag"
-	"log"
+	log "github.com/hzhzh007/RoomChat/common/log"
+	"github.com/samuel/go-zookeeper/zk"
 	"net"
 	"net/http"
 	"net/rpc"
@@ -10,6 +11,7 @@ import (
 
 var (
 	g_RoomCenter = RoomCenter{rooms: make(map[string]*hub)}
+	g_zk         *zk.Conn
 )
 
 func rpcServer() {
@@ -26,6 +28,7 @@ func main() {
 	flag.Parse()
 	loadConfig(false)
 	go rpcServer()
+	g_zk, _ = InitZK()
 	http.Handle("/ws", g_RoomCenter)
 	if err := http.ListenAndServe(GetConfig().ServeAddr, nil); err != nil {
 		log.Fatal("ListenAndServe:", err)

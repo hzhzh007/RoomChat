@@ -1,6 +1,6 @@
 # connector config file
 # ServeAddr should be the pulbic ip:port
-ServeAddr : 127.0.0.1:8080
+ServeAddr : 127.0.0.1:8085
 # connectors ip
 ConnAddr :
     -  127.0.0.1:8082

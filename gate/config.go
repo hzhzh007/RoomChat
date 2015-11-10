@@ -4,6 +4,7 @@ package main
 
 import (
 	"flag"
+	. "github.com/hzhzh007/RoomChat/common"
 	log "github.com/hzhzh007/RoomChat/common/log"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -14,21 +15,21 @@ import (
 	"syscall"
 )
 
-type ConnectorConf struct {
-	Hostname  string `yaml:"Hostname"`
-	ServeAddr string `yaml:"ServeAddr"`
-	RpcAddr   string `yaml:"RpcAddr"`
-}
-
 type Config struct {
 	ServeAddr  string          `yaml:"ServeAddr"`
 	Connectors []ConnectorConf `yaml:"Connectors"`
+	Zk         ZK              `yaml:"zk"`
 	Log        log.LogConfig   `yaml:"log"`
 }
 
 func NewDefaultConfig() *Config {
 	return &Config{
 		ServeAddr: "localhost:8080",
+		Zk: ZK{
+			ZookeeperAddr:    []string{"localhost:2181"},
+			ZookeeperTimeout: "30s",
+			ZookeeperNode:    "gate1",
+		},
 		Connectors: []ConnectorConf{
 			{Hostname: "1", ServeAddr: "127.0.0.1:8888", RpcAddr: "127.0.0.1:8888"},
 			{Hostname: "1", ServeAddr: "127.0.0.1:8889", RpcAddr: "127.0.0.1:8889"},

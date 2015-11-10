@@ -1,9 +1,6 @@
 package main
 
-import (
-	"github.com/gorilla/websocket"
-	"sync"
-)
+import ()
 
 type hub struct {
 	roomid string
@@ -32,6 +29,7 @@ func newHub(roomid string) *hub {
 
 //TODO: clean hub
 func (h *hub) run() {
+	ZkAddRoomConn(g_zk, h.roomid)
 	for {
 		select {
 		case c := <-h.register:
@@ -41,6 +39,10 @@ func (h *hub) run() {
 				delete(h.connections, c)
 				close(c.send)
 			}
+			if h.remove(&g_RoomCenter) {
+				break
+			}
+
 		case m := <-h.broadcast:
 			for c := range h.connections {
 				select {
@@ -53,10 +55,16 @@ func (h *hub) run() {
 		}
 	}
 }
-
-var upgrader = &websocket.Upgrader{ReadBufferSize: 1024, WriteBufferSize: 1024}
-
-type RoomCenter struct {
-	rooms map[string]*hub
-	lock  sync.RWMutex
+func (h *hub) remove(rc *RoomCenter) bool {
+	if len(h.connections) != 0 {
+		return false
+	}
+	rc.lock.Lock()
+	defer rc.lock.Unlock()
+	if len(h.connections) != 0 {
+		return false
+	}
+	ZkDeleteRoomConn(g_zk, h.roomid)
+	delete(g_RoomCenter.rooms, h.roomid)
+	return true
 }

@@ -8,6 +8,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net/url"
 	"time"
@@ -30,7 +31,10 @@ func main() {
 	u := url.URL{Scheme: "ws", Host: *addr, Path: *path}
 	log.Printf("connecting to %s", u.String())
 
-	c, _, err := dialer.Dial(u.String(), nil)
+	//	c, _, err := dialer.Dial(u.String(), nil)
+	url := fmt.Sprintf("ws://127.0.0.1:8080%s", *path)
+	//c, _, err := dialer.Dial("ws://127.0.0.1:8080/ws?roomid=4", nil)
+	c, _, err := dialer.Dial(url, nil)
 	if err != nil {
 		log.Fatal("dial:", err)
 	}
@@ -39,7 +43,7 @@ func main() {
 	for i := 0; i < *concurency; i++ {
 		log.Println(" processs client :", i)
 		go func(i int) {
-			c, _, err := dialer.Dial(u.String(), nil)
+			c, _, err := dialer.Dial(url, nil)
 			if err != nil {
 				log.Fatal("dial:", err)
 			}
@@ -57,7 +61,7 @@ func main() {
 		}(i)
 	}
 
-	ticker := time.NewTicker(1 * time.Second)
+	ticker := time.NewTicker(30 * time.Second)
 	defer ticker.Stop()
 
 	for t := range ticker.C {

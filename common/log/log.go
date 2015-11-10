@@ -48,19 +48,23 @@ func InitLog(logConfig *LogConfig) error {
 }
 
 func Debug(format string, args ...interface{}) {
-	logger.Debug(format, args)
+	logger.Debug(format, args...)
 }
 
 func Info(format string, args ...interface{}) {
-	logger.Info(format, args)
+	logger.Info(format, args...)
 }
 
 func Error(format string, args ...interface{}) {
-	logger.Error(format, args)
+	logger.Error(format, args...)
 }
 func Println(format string, args ...interface{}) {
-	logger.Info(format, args)
+	logger.Info(format, args...)
 }
 func Fatal(format string, args ...interface{}) {
-	logger.Critical(format, args)
+	logger.Critical(format, args...)
+}
+
+func Warning(format string, args ...interface{}) {
+	logger.Warning(format, args...)
 }

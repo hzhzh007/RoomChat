@@ -4,6 +4,7 @@ package main
 
 import (
 	"flag"
+	. "github.com/hzhzh007/RoomChat/common"
 	log "github.com/hzhzh007/RoomChat/common/log"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -17,6 +18,7 @@ import (
 type Config struct {
 	ServeAddr string        `yaml:"ServeAddr"`
 	RpcAddr   string        `yaml:"RpcAddr"`
+	Zk        ZK            `yaml:"zk"`
 	Log       log.LogConfig `yaml:"log"`
 }
 
@@ -24,6 +26,11 @@ func NewDefaultConfig() *Config {
 	return &Config{
 		ServeAddr: "localhost:8080",
 		RpcAddr:   "localhost:8082",
+		Zk: ZK{
+			ZookeeperAddr:    []string{"localhost:2181"},
+			ZookeeperTimeout: "30s",
+			ZookeeperNode:    "conn2",
+		},
 		Log: log.LogConfig{Module: "connector",
 			FileName: "log.log",
 			Level:    1,
@@ -86,5 +93,6 @@ func loadConfig(fail bool) error {
 	configLock.Lock()
 	Conf = temp
 	configLock.Unlock()
+	log.InitLog(&Conf.Log)
 	return nil
 }

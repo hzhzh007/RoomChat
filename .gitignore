@@ -1,0 +1,9 @@
+connector/connector
+gate/gate
+router/router
+request/request
+tools/client
+tools/main
+tools/rpc_connector_broadcast
+tools/rpc_connector_roominfo
+*go.sw*
